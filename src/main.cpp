@@ -30,10 +30,10 @@ void display() {
 	for (i = 0; i < xfields+1; i++) {
 		glBegin(GL_POLYGON);
 		glColor3f(0.5,0.0,0.0); 
-		glVertex3f(0.9, -0.9-LWIDTH+i*dy, 0);
-		glVertex3f(0.9, -0.9+LWIDTH+i*dy, 0);
-		glVertex3f(-0.9, -0.9+LWIDTH+i*dy, 0);
-		glVertex3f(-0.9, -0.9-LWIDTH+i*dy, 0);
+		glVertex3f(0.9+LWIDTH, -0.9-LWIDTH+i*dy, 0);
+		glVertex3f(0.9+LWIDTH, -0.9+LWIDTH+i*dy, 0);
+		glVertex3f(-0.9-LWIDTH, -0.9+LWIDTH+i*dy, 0);
+		glVertex3f(-0.9-LWIDTH, -0.9-LWIDTH+i*dy, 0);
 		glEnd();
 		glBegin(GL_POLYGON);
 		glColor3f(0.5,0.0,0.0); 
