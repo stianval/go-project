@@ -5,7 +5,6 @@
 #include <GL/gl.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <sys/time.h>
 #include <iostream>
 #include <math.h>
 #define SWIDTH 700
@@ -14,7 +13,6 @@
 
 int xfields, yfields;
 double dx, dy;
-struct timeval ptime, ntime;
 
 void display() {
 	int i, j;
@@ -49,16 +47,13 @@ void display() {
 void key(unsigned char key, int x, int y) {
 	switch(key) {
 		case 27:
-			exit(0);
+			exit(EXIT_SUCCESS);
 		default:
 			break;
 	}
 }
 
 void idle() {
-	gettimeofday(&ntime, NULL);
-	glutPostRedisplay();
-	ptime = ntime;
 }
 
 void mouse(int x, int y) {
@@ -68,8 +63,6 @@ int main(int argc, char **argv) {
 	xfields = yfields = 19;
 	dx = 1.8/xfields;
 	dy = 1.8/yfields;
-	int i, j, k;
-	gettimeofday(&ptime, NULL);
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
 	glutInitWindowSize(SWIDTH,SHEIGHT);
