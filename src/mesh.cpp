@@ -29,13 +29,9 @@ void load_mesh (GLuint dest, const char* filename)
 		
 		// If the line has any contents
 		if(splitLine.size()>0) {
-			for(StringVector::iterator i=splitLine.begin()+1;
-				i != splitLine.end(); ++i) {
 				
-			}
-			
 			switch(splitLine[0][0]) {
-				'v':
+				case 'v':
 					if(splitLine.size()>=4) {
 						// Add each vertex point
 						for(int v=1; v<4; v++) {
@@ -44,20 +40,20 @@ void load_mesh (GLuint dest, const char* filename)
 					}
 				break;
 				
-				'f':
+				case 'f':
 					if(splitLine.size()>=2) {
 						faces.push_back( atoi(splitLine[1].c_str()) );
 					}
 				break;
 				
 				default:
-					;
+					break;
 			}
 		}
 	}
 	
 	glBufferData( GL_ARRAY_BUFFER, verts.size()*sizeof(float),
 				  &verts[0], GL_STATIC_DRAW);
-	glBufferData( GL_ARRAY_BUFFER, faces.size()*sizeof(float),
-				  &verts[0], GL_STATIC_DRAW);
+	glBufferData( GL_ELEMENT_ARRAY_BUFFER, faces.size()*sizeof(int),
+				  &faces[0], GL_STATIC_DRAW);
 }
