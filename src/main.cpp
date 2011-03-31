@@ -3,7 +3,7 @@
 #include "game.h"
 
 void init_gl() {
-    glClearColor (1.0, 1.0, 1.0, 1.0); // Set background to white
+	glClearColor (1.0, 1.0, 1.0, 1.0); // Set background to white
 }
 
 int main(int argc, char **argv) {
@@ -17,7 +17,7 @@ int main(int argc, char **argv) {
 	glutIdleFunc(game_idle);
 
 	init_gl();
-	game_init ();
+	game_init (argc, argv);
 
 	glutMainLoop();
 	return 0;

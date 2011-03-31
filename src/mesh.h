@@ -3,6 +3,14 @@
 
 #include <GL/gl.h>
 
-void load_mesh (GLuint dest, const char *filename);
+/**
+ * Loads mesh data from a .obj file.
+ * @param vbo vertex buffer object handle pointer. Should be released manually
+ * later.
+ * @param ebo element buffer object handle pointer. Should be released manually
+ * later.
+ * @param filename filename for .obj file.
+ */
+void load_mesh (GLuint *vbo, GLuint *ebo, const char *filename);
 
 #endif

@@ -1,4 +1,6 @@
 #include <GL/glut.h>
+#include <cstdio>
+#include <cstdlib>
 
 #define LWIDTH 0.008
 
@@ -32,17 +34,29 @@ void draw_board() {
 	}
 }
 
-void game_init ()
+void game_init (int argc, char *argv[])
 {
 	xfields = yfields = 19;
 	dx = 1.8/xfields;
 	dy = 1.8/yfields;
+	if (argc < 2){
+		// Set mode to client!
+	}
+	else if (argc == 2){
+		// Set mode to host
+	}
+	else {
+		printf ("Usage: %s [ip]\n", argv[0]);
+		exit (EXIT_FAILURE);
+	}
+
 }
 
 void game_display() {
 	glClear(GL_COLOR_BUFFER_BIT);
 	draw_board();
-    glutSwapBuffers();
+	//draw_random_mesh();
+	glutSwapBuffers();
 }
 
 void game_keyboard(unsigned char key, int x, int y) {

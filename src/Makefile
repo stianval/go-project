@@ -8,4 +8,4 @@ game: $(SOURCES)
 
 .PHONY: clean
 clean:
-	rm *.o
+	rm game *.o
