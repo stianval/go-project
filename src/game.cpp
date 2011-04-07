@@ -1,12 +1,15 @@
 #include <GL/glut.h>
 #include <cstdio>
 #include <cstdlib>
+#include <iostream>
+
+#include "networking.h"
 
 #include "mesh.h"
 
 #define LWIDTH 0.008
 
-int xfields, yfields;
+int xfields, yfields, rq_sock, sock;
 double dx, dy;
 
 GLuint vbo, ebo;
@@ -40,14 +43,20 @@ void draw_board() {
 
 void game_init (int argc, char *argv[])
 {
+
 	xfields = yfields = 19;
 	dx = 1.8/xfields;
 	dy = 1.8/yfields;
 	if (argc < 2){
-		// Set mode to client!
+		rq_sock = init_server();
+		std::cout << rq_sock;
+		//read(socket, buf, 5);
+		std::cout << "read!";
 	}
 	else if (argc == 2){
-		// Set mode to host
+		sock = init_client(argv[1]);
+		//write(socket, buf, 5);
+		std::cout << "write!";
 	}
 	else {
 		printf ("Usage: %s [ip]\n", argv[0]);

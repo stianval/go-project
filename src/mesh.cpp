@@ -73,7 +73,7 @@ void load_mesh (GLuint *vbo, GLuint *ebo, const char* filename)
 	glBindBuffer( GL_ARRAY_BUFFER, 0);
 	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0);
 	
-	printf("%d\n", faces.size()/3);
+	printf("%d\n", (int) faces.size()/3);
 }
 
 void render_mesh(GLuint vbo, GLuint ebo)
