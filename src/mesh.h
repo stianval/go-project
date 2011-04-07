@@ -13,4 +13,9 @@
  */
 void load_mesh (GLuint *vbo, GLuint *ebo, const char *filename);
 
+/**
+ * Renders a mesh file.
+ */
+void render_mesh(GLuint vbo, GLuint ebo);
+
 #endif

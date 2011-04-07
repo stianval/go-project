@@ -2,13 +2,17 @@
 #include <cstdio>
 #include <cstdlib>
 
+#include "mesh.h"
+
 #define LWIDTH 0.008
 
 int xfields, yfields;
 double dx, dy;
 
+GLuint vbo, ebo;
+
 void draw_board() {
-	int i, j;
+	int i;
 	glBegin(GL_POLYGON);
 	glColor3f(0.8,0.8,0.5); 
 	glVertex3f(-1, -1, 0);
@@ -49,12 +53,23 @@ void game_init (int argc, char *argv[])
 		printf ("Usage: %s [ip]\n", argv[0]);
 		exit (EXIT_FAILURE);
 	}
-
+	
+	load_mesh(&vbo, &ebo, "stone.obj");
 }
 
 void game_display() {
 	glClear(GL_COLOR_BUFFER_BIT);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	//gluOrtho2D(-1,1,1,-1);
+	gluPerspective(60.0, 1, 0.01, 100);
+	
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	gluLookAt(1,1,1, 0,0,0, 0,0,1);
+	
 	draw_board();
+	render_mesh(vbo,ebo);
 	//draw_random_mesh();
 	glutSwapBuffers();
 }

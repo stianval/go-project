@@ -1,10 +1,10 @@
 CC = g++
-LFLAGS = -lglut
+LFLAGS = -lglut -lGLU
 #SOURCES = main.cpp game.cpp networking.cpp
 SOURCES = *.cpp
 
 game: $(SOURCES)
-	$(CC) -o $@ $(LFLAGS) $^
+	$(CC) -Wall -g -o $@ $(LFLAGS) $^
 
 
 .PHONY: clean
