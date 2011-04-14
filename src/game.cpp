@@ -63,7 +63,7 @@ void game_init (int argc, char *argv[])
 		exit (EXIT_FAILURE);
 	}
 	
-	load_mesh(&vbo, &ebo, "stone.obj");
+	load_mesh(&vbo, &ebo, "triangle.obj");
 }
 
 void game_display() {

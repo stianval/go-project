@@ -11,8 +11,7 @@ using namespace std;
 int init_server() {
 	struct sockaddr_in serveraddr;
 	int request_sd;
-	int yes = 1;
-	cerr << "debug";// << endl << PF_INET << endl << SOCK_STREAM << endl << IPPROTO_TCP << endl;
+	//int yes = 1;
 	if ((request_sd = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0) {
 		perror("socket()");
 		return -1;

@@ -9,6 +9,8 @@
 
 #include "mesh.h"
 
+extern double dx;
+
 typedef std::vector<std::string> StringVector;
 typedef std::vector<GLfloat> FloatVector;
 typedef std::vector<GLushort> IndexVector;
@@ -38,7 +40,7 @@ void load_mesh (GLuint *vbo, GLuint *ebo, const char* filename)
 					if(splitLine.size()>=4) {
 						// Add each vertex point
 						for(int v=1; v<4; v++) {
-							verts.push_back( atof(splitLine[v].c_str())*0.1 );
+							verts.push_back( atof(splitLine[v].c_str())*dx*0.45);
 						}
 					}
 				break;
@@ -85,7 +87,7 @@ void render_mesh(GLuint vbo, GLuint ebo)
 	
 	glColor3f(1.0,0,0);
 	glVertexPointer(3, 	GL_FLOAT, 0,0);
-	glDrawElements( GL_TRIANGLES, 98, GL_UNSIGNED_SHORT, 0);
+	glDrawElements( GL_TRIANGLES,12, GL_UNSIGNED_SHORT, 0);
 	
 	glDisableClientState(GL_VERTEX_ARRAY);
 	
