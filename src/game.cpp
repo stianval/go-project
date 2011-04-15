@@ -3,6 +3,14 @@
 #include <cstdlib>
 #include <iostream>
 
+#ifdef _WIN32
+#include <winsock2.h>
+#include <GL/glext.h>
+PFNGLGENBUFFERSPROC glGenBuffers;
+PFNGLBINDBUFFERPROC glBindBuffer;
+PFNGLBUFFERDATAPROC glBufferData;
+#endif
+
 #include "networking.h"
 
 #include "mesh.h"
@@ -47,6 +55,24 @@ void game_init (int argc, char *argv[])
 	xfields = yfields = 19;
 	dx = 1.8/xfields;
 	dy = 1.8/yfields;
+	
+	// should be substituted by a os_init or win_init function.
+#ifdef _WIN32
+	WSADATA wsaData;
+	if (WSAStartup(MAKEWORD(2,0), &wsaData) != 0)
+	  {
+		fprintf (stderr, "WSAStartup failed.\n");
+		exit (EXIT_FAILURE);
+	  }
+
+	glGenBuffers = (PFNGLGENBUFFERSPROC)
+		wglGetProcAddress ("glGenBuffers");
+	glBindBuffer = (PFNGLBINDBUFFERPROC)
+		wglGetProcAddress ("glBindBuffer");
+	glBufferData = (PFNGLBUFFERDATAPROC)
+		wglGetProcAddress ("glBufferData");
+#endif
+	
 	if (argc < 2){
 		rq_sock = init_server();
 		std::cout << rq_sock;
@@ -62,8 +88,9 @@ void game_init (int argc, char *argv[])
 		printf ("Usage: %s [ip]\n", argv[0]);
 		exit (EXIT_FAILURE);
 	}
-	
+
 	load_mesh(&vbo, &ebo, "triangle.obj");
+	
 }
 
 void game_display() {

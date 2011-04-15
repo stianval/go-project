@@ -1,6 +1,15 @@
-#define GL_GLEXT_PROTOTYPES
-
+#ifdef _WIN32
+#include <windows.h>
 #include <GL/gl.h>
+#include <GL/glext.h>
+extern PFNGLGENBUFFERSPROC glGenBuffers;
+extern PFNGLBINDBUFFERPROC glBindBuffer;
+extern PFNGLBUFFERDATAPROC glBufferData;
+#else /* !_WIN32 */
+#define GL_GLEXT_PROTOTYPES
+#include <GL/gl.h>
+#endif /* !_WIN32 */
+
 #include <vector>
 #include <string>
 #include <fstream>
@@ -24,6 +33,11 @@ void load_mesh (GLuint *vbo, GLuint *ebo, const char* filename)
 	// Buffer objects
 	FloatVector verts;
 	IndexVector faces;
+	
+	if ( fin.fail() ) {
+		fprintf (stderr, "Could not open file %s\n", filename);
+		exit (EXIT_FAILURE);
+	} 
 	
 	// For each line in the file
 	while( !fin.eof() ) {

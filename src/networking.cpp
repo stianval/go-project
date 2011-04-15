@@ -1,13 +1,19 @@
+#ifdef _WIN32
+#include <Ws2tcpip.h>
+#else
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
-#include <strings.h>
 #include <iostream>
+#include <string.h>
 
 #include "networking.h"
 using namespace std;
+
 int init_server() {
 	struct sockaddr_in serveraddr;
 	int request_sd;
@@ -27,7 +33,7 @@ int init_server() {
 
 	cerr << "debug";
 
-	bzero(&serveraddr, sizeof(sockaddr_in));
+	memset(&serveraddr, 0, sizeof(sockaddr_in));
 	serveraddr.sin_family = AF_INET;
 	serveraddr.sin_addr.s_addr = INADDR_ANY;
 	serveraddr.sin_port = HOSTPORT;
@@ -58,10 +64,12 @@ int init_client(char *hostname) {
 	int sd;
 	sd = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
 	struct sockaddr_in serveraddr;
-	bzero(&serveraddr, sizeof(struct sockaddr_in));
+	
+	memset(&serveraddr, 0, sizeof(struct sockaddr_in));
 	serveraddr.sin_family = AF_INET;
 	inet_pton(AF_INET, hostname, &serveraddr.sin_addr);
 	serveraddr.sin_port = htons(HOSTPORT);
+	
 	if (connect(sd, (struct sockaddr *) &serveraddr, sizeof(struct sockaddr_in)) < 0) {
 		perror("connect()");
 		return -1;
