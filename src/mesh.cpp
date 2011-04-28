@@ -24,7 +24,7 @@ typedef std::vector<std::string> StringVector;
 typedef std::vector<GLfloat> FloatVector;
 typedef std::vector<GLushort> IndexVector;
 
-void load_mesh (GLuint *vbo, GLuint *ebo, const char* filename)
+void Mesh::load(const char* filename)
 {
 	std::fstream fin(filename, std::fstream::in);
 	std::string line;
@@ -63,9 +63,7 @@ void load_mesh (GLuint *vbo, GLuint *ebo, const char* filename)
 					if(splitLine.size()>=4) {
 						for(int f=1; f<4; f++) {
 							faces.push_back( atoi(splitLine[f].c_str())-1 );
-							//printf("%d ", faces.back());
 						}
-						//printf("\n");
 					}
 				break;
 				
@@ -75,24 +73,25 @@ void load_mesh (GLuint *vbo, GLuint *ebo, const char* filename)
 		}
 	}
 	
-	glGenBuffers(1, vbo);
-	glGenBuffers(1, ebo);
+	glGenBuffers(1, &vbo);
+	glGenBuffers(1, &ebo);
 	
-	glBindBuffer( GL_ARRAY_BUFFER, *vbo);
+	glBindBuffer( GL_ARRAY_BUFFER, vbo);
 	glBufferData( GL_ARRAY_BUFFER, verts.size()*sizeof(GLfloat),
 				  &verts[0], GL_STATIC_DRAW);
 	
-	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, *ebo);
+	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, ebo);
 	glBufferData( GL_ELEMENT_ARRAY_BUFFER, faces.size()*sizeof(GLushort),
 				  &faces[0], GL_STATIC_DRAW);
 	
 	glBindBuffer( GL_ARRAY_BUFFER, 0);
 	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0);
 	
-	printf("%d\n", (int) faces.size()/3);
+	nIndex = faces.size();
+	printf("%d\n", nIndex);
 }
 
-void render_mesh(GLuint vbo, GLuint ebo)
+void Mesh::render()
 {
 	glBindBuffer( GL_ARRAY_BUFFER, vbo);
 	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, ebo);
@@ -101,7 +100,7 @@ void render_mesh(GLuint vbo, GLuint ebo)
 	
 	glColor3f(1.0,0,0);
 	glVertexPointer(3, 	GL_FLOAT, 0,0);
-	glDrawElements( GL_TRIANGLES,12, GL_UNSIGNED_SHORT, 0);
+	glDrawElements( GL_TRIANGLES, nIndex, GL_UNSIGNED_SHORT, 0);
 	
 	glDisableClientState(GL_VERTEX_ARRAY);
 	

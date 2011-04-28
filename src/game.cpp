@@ -20,7 +20,7 @@ PFNGLBUFFERDATAPROC glBufferData;
 int xfields, yfields, rq_sock, sock;
 double dx, dy;
 
-GLuint vbo, ebo;
+Mesh mesh;
 
 void draw_board() {
 	int i;
@@ -89,24 +89,37 @@ void game_init (int argc, char *argv[])
 		exit (EXIT_FAILURE);
 	}
 
-	load_mesh(&vbo, &ebo, "triangle.obj");
+	mesh.load("triangle.obj");
 	
+}
+
+void set_board_position(int x,int y)
+{
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	glTranslatef(-0.9+LWIDTH+x*dx, -0.9+LWIDTH+y*dy, 0);
 }
 
 void game_display() {
 	glClear(GL_COLOR_BUFFER_BIT);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	//gluOrtho2D(-1,1,1,-1);
-	gluPerspective(60.0, 1, 0.01, 100);
+	gluOrtho2D(-1,1,1,-1);
+	//gluPerspective(60.0, 1, 0.01, 100);
 	
-	glMatrixMode(GL_MODELVIEW);
+	//glMatrixMode(GL_MODELVIEW);
+	//glLoadIdentity();
+	//gluLookAt(1,1,1, 0,0,0, 0,0,1);
+	
 	glLoadIdentity();
-	gluLookAt(1,1,1, 0,0,0, 0,0,1);
-	
 	draw_board();
-	render_mesh(vbo,ebo);
-	//draw_random_mesh();
+	for(int x=0; x<=xfields; x++)
+		for(int y=0; y<=yfields; y++) {
+			if(rand()%2 == 0) {
+				set_board_position(x,y);
+				mesh.render();
+			}
+		}
 	glutSwapBuffers();
 }
 

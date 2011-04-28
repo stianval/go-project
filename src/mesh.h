@@ -3,19 +3,28 @@
 
 #include <GL/gl.h>
 
-/**
- * Loads mesh data from a .obj file.
- * @param vbo vertex buffer object handle pointer. Should be released manually
- * later.
- * @param ebo element buffer object handle pointer. Should be released manually
- * later.
- * @param filename filename for .obj file.
- */
-void load_mesh (GLuint *vbo, GLuint *ebo, const char *filename);
+class Mesh {
+	public:
+	/**
+	 * Loads mesh data from a .obj file.
+	 * @param vbo vertex buffer object handle pointer. Should be released manually
+	 * later.
+	 * @param ebo element buffer object handle pointer. Should be released manually
+	 * later.
+	 * @param filename filename for .obj file.
+	 */
+	void load(const char *filename);
 
-/**
- * Renders a mesh file.
- */
-void render_mesh(GLuint vbo, GLuint ebo);
+	/**
+	 * Renders a mesh file.
+	 */
+	void render();
+	
+	private:
+		GLsizei nIndex;
+		
+		GLuint vbo; ///< Vertex buffer
+		GLuint ebo; ///< Element buffer
+};
 
 #endif
