@@ -13,11 +13,14 @@ PFNGLBUFFERDATAPROC glBufferData;
 
 #include "networking.h"
 
+#include "game.h"
 #include "mesh.h"
 
 #define LWIDTH 0.008
 
+int **board;
 int xfields, yfields, rq_sock, sock;
+int player;
 double dx, dy;
 
 Mesh mesh;
@@ -31,7 +34,7 @@ void draw_board() {
 	glVertex3f(1, 1, 0);
 	glVertex3f(1, -1, 0);
 	glEnd();
-	for (i = 0; i < xfields+1; i++) {
+	for (i = 0; i < xfields; i++) {
 		glBegin(GL_POLYGON);
 		glColor3f(0.5,0.0,0.0); 
 		glVertex3f(0.9+LWIDTH, -0.9-LWIDTH+i*dy, 0);
@@ -51,10 +54,17 @@ void draw_board() {
 
 void game_init (int argc, char *argv[])
 {
-
+	player = 0;
 	xfields = yfields = 19;
-	dx = 1.8/xfields;
-	dy = 1.8/yfields;
+	dx = 1.8/(xfields-1);
+	dy = 1.8/(yfields-1);
+	
+	board = new int*[yfields];
+	for(int y=0;y<yfields; y++) {
+		board[y] = new int[xfields];
+		for(int x=0; x<xfields; x++)
+			board[y][x] = 0;
+	}
 	
 	// should be substituted by a os_init or win_init function.
 #ifdef _WIN32
@@ -74,12 +84,15 @@ void game_init (int argc, char *argv[])
 #endif
 	
 	if (argc < 2){
+		player = 0;
 		rq_sock = init_server();
-		std::cout << rq_sock;
+		std::cerr << rq_sock;
+		sock = accept_or_die(rq_sock);
 		//read(socket, buf, 5);
 		std::cout << "read!";
 	}
 	else if (argc == 2){
+		player = 1;
 		sock = init_client(argv[1]);
 		//write(socket, buf, 5);
 		std::cout << "write!";
@@ -111,13 +124,19 @@ void game_display() {
 	//glLoadIdentity();
 	//gluLookAt(1,1,1, 0,0,0, 0,0,1);
 	
+	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	draw_board();
-	for(int x=0; x<=xfields; x++)
-		for(int y=0; y<=yfields; y++) {
-			if(rand()%2 == 0) {
+	
+	for(int x=0; x<xfields; x++)
+		for(int y=0; y<yfields; y++) {
+			if(board[y][x]) {
+				static float cols[] =
+					{0,0,0, 1,1,1};
+				
 				set_board_position(x,y);
-				mesh.render();
+				int bval = board[y][x]-1;
+				mesh.render(cols[bval*3], cols[bval*3+1], cols[bval*3+2]);
 			}
 		}
 	glutSwapBuffers();
@@ -133,7 +152,52 @@ void game_keyboard(unsigned char key, int x, int y) {
 }
 
 void game_idle() {
+	sPlayerAction action;
+	get_command(sock, &action);
+	switch (action.command) {
+		case CmdPut:
+			board[action.y][action.x] = (!player)+1;
+			break;
+		case CmdRemove:
+			board[action.y][action.x] = 0;
+			break;
+		default:
+			break;
+	}
 }
 
-void game_mouse(int x, int y) {
+void game_mouse(int b, int z, int x, int y) {
+	if(!z)
+		return;
+	
+	double xd = (double(x)/SWIDTH - 0.5)*2.0 + 0.9;
+	double yd = (double(y)/SHEIGHT - 0.5)*2.0 + 0.9;
+	
+	int iX = xd/1.8*18.0 +0.5;
+	int iY = yd/1.8*18.0 +0.5;
+	
+	sPlayerAction action;
+	
+	printf("%g %g\n", xd,yd);
+	if(iX < xfields && iY < yfields && iX>=0 && iY>=0) {
+		switch(b)
+		{
+			case GLUT_LEFT_BUTTON:
+				board[iY][iX] = player+1;
+				action.command = CmdPut;
+				action.x = iX;
+				action.y = iY;
+				send_command(sock, action);
+				break;
+				
+			case GLUT_RIGHT_BUTTON:
+				board[iY][iX] = 0;
+				action.command = CmdRemove;
+				action.x = iX;
+				action.y = iY;
+				send_command(sock, action);
+				break;
+		}
+		glutPostRedisplay();
+	}
 }

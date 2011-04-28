@@ -36,7 +36,7 @@ int init_server() {
 	memset(&serveraddr, 0, sizeof(sockaddr_in));
 	serveraddr.sin_family = AF_INET;
 	serveraddr.sin_addr.s_addr = INADDR_ANY;
-	serveraddr.sin_port = HOSTPORT;
+	serveraddr.sin_port = htons(HOSTPORT);
 
 
 	cerr << "debug";
@@ -57,6 +57,13 @@ int init_server() {
 }
 
 int accept_or_die(int request_sd) {
+	struct sockaddr_in addr;
+	socklen_t addrsize = sizeof (sockaddr_in);
+	int res = accept (request_sd, (struct sockaddr*) &addr, &addrsize);
+	if (res < 0) {
+		perror ("accept");
+		exit (EXIT_FAILURE);
+	}
 	return 0;
 }
 
@@ -75,4 +82,24 @@ int init_client(char *hostname) {
 		return -1;
 	}
 	return sd;
+}
+
+void get_command(int sfd, sPlayerAction *action) {
+	char buf[1024];
+	int res = recv(sfd, buf, sizeof (buf), MSG_DONTWAIT);
+	if (res > 0){
+		action->command = (Command) ntohl(*(int*)&buf[0]);
+		action->x = ntohl(*(int*)&buf[4]);
+		action->y = ntohl(*(int*)&buf[8]);
+	} else {
+		action->command = CmdNothing;
+	}
+}
+
+void send_command(int sfd, const sPlayerAction& action){
+	char buf[1024];
+	*(int*)&buf[0] = htonl((int)action.command);
+	*(int*)&buf[4] = htonl(action.x);
+	*(int*)&buf[8] = htonl(action.y);
+	write(sfd, buf, sizeof (buf));
 }

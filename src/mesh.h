@@ -18,7 +18,7 @@ class Mesh {
 	/**
 	 * Renders a mesh file.
 	 */
-	void render();
+	void render(float r,float g, float b);
 	
 	private:
 		GLsizei nIndex;

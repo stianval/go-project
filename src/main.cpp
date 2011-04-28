@@ -12,7 +12,7 @@ int main(int argc, char **argv) {
 	glutInitWindowSize(SWIDTH,SHEIGHT);
 	glutCreateWindow("Go");
 	glutDisplayFunc(game_display);
-	glutMotionFunc(game_mouse);
+	glutMouseFunc(game_mouse);
 	glutKeyboardFunc(game_keyboard);
 	glutIdleFunc(game_idle);
 
