@@ -88,14 +88,11 @@ void game_init (int argc, char *argv[])
 		rq_sock = init_server();
 		std::cerr << rq_sock;
 		sock = accept_or_die(rq_sock);
-		//read(socket, buf, 5);
-		std::cout << "read!";
+		printf("Socket: %d\n", sock);
 	}
 	else if (argc == 2){
 		player = 1;
 		sock = init_client(argv[1]);
-		//write(socket, buf, 5);
-		std::cout << "write!";
 	}
 	else {
 		printf ("Usage: %s [ip]\n", argv[0]);
@@ -157,9 +154,11 @@ void game_idle() {
 	switch (action.command) {
 		case CmdPut:
 			board[action.y][action.x] = (!player)+1;
+			glutPostRedisplay();
 			break;
 		case CmdRemove:
 			board[action.y][action.x] = 0;
+			glutPostRedisplay();
 			break;
 		default:
 			break;

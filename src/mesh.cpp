@@ -88,7 +88,6 @@ void Mesh::load(const char* filename)
 	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, 0);
 	
 	nIndex = faces.size();
-	printf("%d\n", nIndex);
 }
 
 void Mesh::render(float r, float g, float b)
