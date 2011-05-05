@@ -102,4 +102,7 @@ void send_command(int sfd, const sPlayerAction& action){
 	*(int*)&buf[4] = htonl(action.x);
 	*(int*)&buf[8] = htonl(action.y);
 	int res = send(sfd, buf, 12, 0);
+	if (res < 0) {
+		perror("send_command");
+	}
 }

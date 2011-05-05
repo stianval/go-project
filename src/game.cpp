@@ -20,7 +20,7 @@ PFNGLBUFFERDATAPROC glBufferData;
 
 int **board;
 int xfields, yfields, rq_sock, sock;
-int player;
+int player, turn;
 double dx, dy;
 
 Mesh mesh;
@@ -54,7 +54,7 @@ void draw_board() {
 
 void game_init (int argc, char *argv[])
 {
-	player = 0;
+	player = turn = 0;
 	xfields = yfields = 19;
 	dx = 1.8/(xfields-1);
 	dy = 1.8/(yfields-1);
@@ -153,6 +153,7 @@ void game_idle() {
 	get_command(sock, &action);
 	switch (action.command) {
 		case CmdPut:
+			turn = !turn;
 			board[action.y][action.x] = (!player)+1;
 			glutPostRedisplay();
 			break;
@@ -166,9 +167,13 @@ void game_idle() {
 }
 
 void game_mouse(int b, int z, int x, int y) {
-	if(!z)
+	if(!z) {
 		return;
-	
+	}
+	if (turn != player) {
+		return;
+	}
+
 	double xd = (double(x)/SWIDTH - 0.5)*2.0 + 0.9;
 	double yd = (double(y)/SHEIGHT - 0.5)*2.0 + 0.9;
 	
@@ -186,6 +191,7 @@ void game_mouse(int b, int z, int x, int y) {
 				action.command = CmdPut;
 				action.x = iX;
 				action.y = iY;
+				turn = !turn;
 				send_command(sock, action);
 				break;
 				
