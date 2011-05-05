@@ -163,6 +163,16 @@ void game_idle() {
 		default:
 			break;
 	}
+	
+	if(rand()%5 == 0) {
+		int iX = rand()%(yfields), iY = rand()%(yfields);
+		board[iY][iX] = player+1;
+		action.command = CmdPut;
+		action.x = iX;
+		action.y = iY;
+		send_command(sock, action);
+		glutPostRedisplay();
+	}
 }
 
 void game_mouse(int b, int z, int x, int y) {
@@ -177,7 +187,7 @@ void game_mouse(int b, int z, int x, int y) {
 	
 	sPlayerAction action;
 	
-	printf("%g %g\n", xd,yd);
+	//printf("%g %g\n", xd,yd);
 	if(iX < xfields && iY < yfields && iX>=0 && iY>=0) {
 		switch(b)
 		{
