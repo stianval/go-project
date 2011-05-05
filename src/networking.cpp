@@ -86,9 +86,8 @@ int init_client(char *hostname) {
 
 void get_command(int sfd, sPlayerAction *action) {
 	char buf[1024];
-	int res = recv(sfd, buf, sizeof (buf), MSG_DONTWAIT);
+	int res = recv(sfd, buf, 12, MSG_DONTWAIT);
 	if (res > 0){
-		printf("%d\n", res);
 		action->command = (Command) ntohl(*(int*)&buf[0]);
 		action->x = ntohl(*(int*)&buf[4]);
 		action->y = ntohl(*(int*)&buf[8]);
@@ -102,7 +101,5 @@ void send_command(int sfd, const sPlayerAction& action){
 	*(int*)&buf[0] = htonl((int)action.command);
 	*(int*)&buf[4] = htonl(action.x);
 	*(int*)&buf[8] = htonl(action.y);
-	int res = send(sfd, buf, sizeof (buf), 0);
-	
-	printf("AA %d\n", res);
+	int res = send(sfd, buf, 12, 0);
 }
