@@ -95,10 +95,12 @@ void game_init (int argc, char *argv[])
 		rq_sock = init_server();
 		std::cerr << rq_sock;
 		sock = accept_or_die(rq_sock);
+		glutSetWindowTitle ("Go - Server");
 	}
 	else if (argc == 2){
 		player = 1;
 		sock = init_client(argv[1]);
+		glutSetWindowTitle ("Go - Client");
 	}
 	else {
 		printf ("Usage: %s [ip]\n", argv[0]);
