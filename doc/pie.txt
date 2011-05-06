@@ -1,0 +1,3 @@
+Featured file types:
+Textures: .png
+Meshes: .obj

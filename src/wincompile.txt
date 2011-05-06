@@ -1,0 +1,1 @@
+g++ main.cpp -mwindows glut32.lib -lopengl32
