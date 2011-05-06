@@ -42,8 +42,7 @@ int init_server() {
 		socket_error("socket()");
 		return -1;
 	}
-
-	cerr << "debug";
+	
 	/*
 	if (setsockopt(request_sd, SOL_SOCKET, SO_REUSEADDR, &yes,
 		sizeof(int)) < 1) { 
@@ -51,28 +50,23 @@ int init_server() {
 		return -1;
 	}*/
 
-	cerr << "debug";
 
 	memset(&serveraddr, 0, sizeof(sockaddr_in));
 	serveraddr.sin_family = AF_INET;
 	serveraddr.sin_addr.s_addr = INADDR_ANY;
 	serveraddr.sin_port = htons(HOSTPORT);
 
-
-	cerr << "debug";
 	if (bind(request_sd, (struct sockaddr *) &serveraddr, 
 		sizeof (struct sockaddr_in)) < 0) { 
 		socket_error("bind()");
 		return -1;
 	}
-	cerr << "debug";
 
 	if (listen(request_sd, SOMAXCONN) < 0) {
 		socket_error("listen()");
 		return -1;
 	}
 
-	cerr << "debug";
 	return request_sd;
 }
 
@@ -90,7 +84,6 @@ int accept_or_die(int request_sd) {
 
 int init_client(char *hostname) {
 	int sd;
-	int yes = 1;
 	sd = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
 
 	struct sockaddr_in serveraddr;
