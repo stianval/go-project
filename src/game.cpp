@@ -9,7 +9,10 @@
 PFNGLGENBUFFERSPROC glGenBuffers;
 PFNGLBINDBUFFERPROC glBindBuffer;
 PFNGLBUFFERDATAPROC glBufferData;
+#else
+#define closesocket close
 #endif
+
 
 #include "networking.h"
 
@@ -92,7 +95,6 @@ void game_init (int argc, char *argv[])
 		rq_sock = init_server();
 		std::cerr << rq_sock;
 		sock = accept_or_die(rq_sock);
-		printf("Socket: %d\n", sock);
 	}
 	else if (argc == 2){
 		player = 1;
@@ -103,6 +105,7 @@ void game_init (int argc, char *argv[])
 		exit (EXIT_FAILURE);
 	}
 
+	printf("Socket: %d\n", sock);
 	mesh.load("triangle.obj");
 
 }
@@ -146,7 +149,7 @@ void game_display() {
 void game_keyboard(unsigned char key, int x, int y) {
 	switch(key) {
 		case 27:
-			close(sock);
+			closesocket(sock);
 			exit(EXIT_SUCCESS);
 		default:
 			break;

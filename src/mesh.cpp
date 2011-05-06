@@ -8,6 +8,7 @@ extern PFNGLBUFFERDATAPROC glBufferData;
 #else /* !_WIN32 */
 #define GL_GLEXT_PROTOTYPES
 #include <GL/gl.h>
+#include <GL/glext.h>
 #endif /* !_WIN32 */
 
 #include <vector>
