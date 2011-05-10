@@ -205,6 +205,7 @@ void game_mouse(int b, int z, int x, int y) {
 				break;
 
 			case GLUT_RIGHT_BUTTON:
+				break;
 				board[iY][iX] = 0;
 				action.command = CmdRemove;
 				action.x = iX;
