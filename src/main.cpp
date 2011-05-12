@@ -15,7 +15,7 @@ int main(int argc, char **argv) {
 	glutMouseFunc(game_mouse);
 	glutKeyboardFunc(game_keyboard);
 	glutIdleFunc(game_idle);
-
+	
 	init_gl();
 	game_init (argc, argv);
 
