@@ -25,12 +25,14 @@ int **board;
 int xfields, yfields, rq_sock, sock;
 int player, turn;
 double dx, dy;
+int mainmenu;
 
 Mesh mesh;
 
 bool place_stone(int x, int y, int side);
 bool check_freedoms(int x, int y, int side);
-bool handle_flags(bool removePiece);
+int handle_flags(bool removePiece);
+void right_menu(int element);
 
 void draw_board() {
 	int i;
@@ -61,6 +63,9 @@ void draw_board() {
 
 void game_init (int argc, char *argv[])
 {
+	mainmenu = glutCreateMenu(right_menu);
+	glutAddMenuEntry("Connect", 1);
+	glutAttachMenu(GLUT_RIGHT_BUTTON);
 	player = turn = 0;
 	xfields = yfields = 19;
 	dx = 1.8/(xfields-1);
@@ -158,6 +163,10 @@ void game_keyboard(unsigned char key, int x, int y) {
 	}
 }
 
+void right_menu(int element) {
+
+}
+
 void game_idle() {
 	sPlayerAction action;
 	get_command(sock, &action);
@@ -200,6 +209,7 @@ void game_mouse(int b, int z, int x, int y) {
 				}
 				board[iY][iX] = player+1;
 				if (place_stone(iX, iY, player+1)) {
+					board[iY][iX] = 0;
 					return;
 				}
 				action.command = CmdPut;
@@ -224,30 +234,45 @@ void game_mouse(int b, int z, int x, int y) {
 
 bool place_stone(int x, int y, int side){
 	int nx, ny;
-	bool ret = false;
+	static int removedX = -1, removedY = -1;
+	fprintf(stderr, "%d %d %d %d\n", removedX, removedY, x, y);
+	if (removedX == x && removedY == y) {
+		return true;
+	}
+	int hremove = 0;
 	for (int i = 0; i < 4; i++) {
 		nx = x+(i==1)-(i==0);
 		ny = y+(i==3)-(i==2);
-		ret |= handle_flags(!check_freedoms(nx, ny, 3-side));
+		hremove += handle_flags(!check_freedoms(nx, ny, 3-side));
+		if (hremove == 1 && removedX == -1) {
+			removedX = nx;
+			removedY = ny;
+		}
 	}
-	//if (ret) {
-	//	return false;
-	//}
-	return handle_flags(!check_freedoms(x, y, side));
- 
+	bool cf = check_freedoms(x, y, side);
+	int tmp = handle_flags(!cf);
+	if (tmp > 1 || hremove != 1) {
+		removedX = -1;
+		removedY = -1;
+	}
+	return !cf;
 }
 
-bool handle_flags(bool removePiece){
+int handle_flags(bool removePiece){
+	int r = 0;
 	for (int i = 0; i < xfields; i++) {
 		for (int j = 0; j < yfields; j++) {
-			if (removePiece && (board[i][j] & 4)) {
-				board[i][j] = 0;
-			} else {
-				board[i][j] %= 4;
+			if (board[i][j] & 4) {
+				r++;
+				if (removePiece) {
+					board[i][j] = 0;
+				} else {
+					board[i][j] %= 4;
+				}
 			}
 		}
 	}
-	return removePiece;
+	return r;
 }
 
 bool check_freedoms(int x, int y, int side) {
