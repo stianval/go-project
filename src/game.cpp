@@ -235,26 +235,29 @@ void game_mouse(int b, int z, int x, int y) {
 bool place_stone(int x, int y, int side){
 	int nx, ny;
 	static int removedX = -1, removedY = -1;
-	fprintf(stderr, "%d %d %d %d\n", removedX, removedY, x, y);
+	//fprintf(stderr, "%d %d %d %d", removedX, removedY, x, y);
 	if (removedX == x && removedY == y) {
 		return true;
 	}
 	int hremove = 0;
+	bool cf;
 	for (int i = 0; i < 4; i++) {
 		nx = x+(i==1)-(i==0);
 		ny = y+(i==3)-(i==2);
-		hremove += handle_flags(!check_freedoms(nx, ny, 3-side));
+		cf = check_freedoms(nx, ny, 3-side);
+		hremove += !cf*handle_flags(!cf);
 		if (hremove == 1 && removedX == -1) {
 			removedX = nx;
 			removedY = ny;
 		}
 	}
-	bool cf = check_freedoms(x, y, side);
+	cf = check_freedoms(x, y, side);
 	int tmp = handle_flags(!cf);
 	if (tmp > 1 || hremove != 1) {
 		removedX = -1;
 		removedY = -1;
 	}
+	//fprintf(stderr, " %d %d\n", tmp, hremove);
 	return !cf;
 }
 
